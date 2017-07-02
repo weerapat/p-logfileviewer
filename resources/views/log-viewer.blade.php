@@ -12,10 +12,6 @@
 
         <!-- App css -->
         <link href="{{ asset('css/app.css') }}" rel="stylesheet" type="text/css">
-        <style>
-            .table { background-color: #fff; }
-            .table th { background-color: #2d2d2d; color: #fff }
-        </style>
     </head>
     <body>
         <div class="container">
