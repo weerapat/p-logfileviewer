@@ -11,10 +11,4 @@
 |
 */
 
-Route::get('/', function () {
-    $file = '/var/log/install.log';
-    $data = file($file);
-    $logData = array_slice($data, 0, 10);
-
-    return view('log-viewer', ['logData' => $logData]);
-});
+Route::get('/', 'LogFileViewerController@index');

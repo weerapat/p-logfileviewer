@@ -42,7 +42,7 @@
                             <th class="text-center">Log message</th>
                         </thead>
                         <tbody>
-                        @foreach ($logData as $log)
+                        @foreach ($logs as $log)
                             <tr>
                                 <td class="text-center">{{ $loop->iteration }}</td>
                                 <td>{{ $log }}</td>
