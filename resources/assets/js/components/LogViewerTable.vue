@@ -47,7 +47,7 @@
             </div>
         </div>
 
-        <div class="pagination">
+        <div class="pagination" v-if="this.logs.length > 0 && !error">
             <div class="col-xs-3">
                 <button class="btn btn-block btn-success"
                     :class = "{ disabled : (this.page === 1)}"
