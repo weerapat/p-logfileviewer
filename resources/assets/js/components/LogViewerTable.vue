@@ -3,14 +3,14 @@
         <div class="row">
             <div class="col-md-8 col-sm-8">
                 <div class="form-group">
-                    <input v-model="fileLocation" type="text" placeholder="/var/tmp/file.log" class="form-control">
+                    <input v-model="filePath" type="text" placeholder="/var/tmp/file.log" class="form-control">
                     <p class="help-block">Please add path file in your server then click view</p>
                 </div>
             </div>
             <div class="col-md-4 col-sm-4">
                 <div class="form-group">
                     <button class="btn btn-info btn-block"
-                        :class = "{ disabled : (fileLocation.length == '')}"
+                        :class = "{ disabled : (filePath.length == '')}"
                         @click="getLogData()"
                     >
                         View
@@ -46,6 +46,30 @@
                 </table>
             </div>
         </div>
+
+        <div class="pagination">
+            <div class="col-xs-3">
+                <button class="btn btn-block btn-success"
+                    :class = "{ disabled : (this.page === 1)}"
+                    @click="updatePage(1)">|<</button>
+            </div>
+            <div class="col-xs-3">
+                <button class="btn btn-block btn-success"
+                    :class = "{ disabled : (this.page === 1)}"
+                    @click="updatePage(page - 1)"><</button>
+            </div>
+            <div class="col-xs-3">
+                <button class="btn btn-block btn-success"
+                    :class = "{ disabled : (this.page === this.lastPage)}"
+                    @click="updatePage(page + 1)">></button>
+            </div>
+            <div class="col-xs-3">
+                <button class="btn btn-block btn-success"
+                    :class = "{ disabled : (this.page === this.lastPage)}"
+                    @click="updatePage(lastPage)">>|</button>
+            </div>
+        </div>
+
     </div>
 </template>
 
@@ -55,6 +79,14 @@
             width: 40px;
         }
     }
+    .pagination {
+        position: fixed;
+        max-width: 900px;
+        left: 0;
+        right: 0;
+        margin: 0 auto;
+        bottom: 15px;
+    }
 </style>
 
 <script>
@@ -62,16 +94,31 @@
         data () {
             return {
                 logs: [],
-                fileLocation: '',
+                filePath: '',
                 error: '',
+                page: 1,
+                lastPage: 1
             }
         },
 
         methods: {
-            getLogData () {
-                if (this.fileLocation === '') return;
+            /**
+             * Update page number
+             */
+            updatePage (page) {
+                if (page >= 1 && page <= this.lastPage) {
+                    this.page = page;
+                    this.getLogData();
+                }
+            },
 
-                axios.get(`/get-log-file-data?file_location=${this.fileLocation}`)
+            /**
+             * Send request to read log data from server
+             */
+            getLogData () {
+                if (this.filePath === '') return;
+
+                axios.get(`/get-log-file-data?file_path=${this.filePath}&page=${this.page}`)
                     .then(({data}) => {
                         if (data.status === 'error') {
                             this.error = data.message;
@@ -79,6 +126,7 @@
                         }
                         this.error = '';
                         this.logs = data.logs;
+                        this.lastPage = data.totalPages;
                     });
             },
         }

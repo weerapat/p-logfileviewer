@@ -6,16 +6,16 @@ use Exception;
 class ServerFileReaderService
 {
     /**
-     * Read file from server
+     * Reads file from server
      *
-     * @param  string $fileLocation
+     * @param  string $filePath
      *
      * @return array
      */
-    public function read(string $fileLocation) : array
+    public function read(string $filePath) : array
     {
         try {
-            $data = file($fileLocation);
+            $data = file($filePath);
         } catch (Exception $e) {
             return [
                 'status' => 'error',
