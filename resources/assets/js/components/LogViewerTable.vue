@@ -11,7 +11,7 @@
                 <div class="form-group">
                     <button class="btn btn-info btn-block"
                         :class = "{ disabled : (filePath.length == '')}"
-                        @click="getLogData()"
+                        @click="clickView()"
                     >
                         View
                     </button>
@@ -23,6 +23,10 @@
             <div class="col-md-12">
                 <div v-show="error" class="alert alert-danger">{{ error }}</div>
             </div>
+            <div class="col-md-12">
+                <div v-show="this.logs.length === 0" class="alert alert-info">No data</div>
+            </div>
+
         </div>
 
         <div class="row">
@@ -39,7 +43,7 @@
                     </thead>
                     <tbody>
                         <tr v-for="(log, index) in logs">
-                            <td class="text-center">{{ getRowNumber(index) }}</td>
+                            <td class="text-center">{{ getLineNumber(index) }}</td>
                             <td>{{ log }}</td>
                         </tr>
                     </tbody>
@@ -103,13 +107,21 @@
 
         methods: {
             /**
-             * Gets row number of current page
+             * Gets line number of current content
              *
              * @param {Number} index
-             * @return {Number} row number
+             * @return {Number} line number
              */
-            getRowNumber(index) {
+            getLineNumber(index) {
                 return ((this.currentPage - 1) * 10) + index + 1;
+            },
+
+            /**
+             * View button listener
+             */
+            clickView() {
+                this.currentPage = 1;
+                this.getLogData();
             },
 
             /**
