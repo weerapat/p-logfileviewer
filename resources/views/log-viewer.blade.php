@@ -4,6 +4,7 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="csrf-token" content="{{ csrf_token() }}">
 
         <title>Log File Viewer</title>
 
@@ -14,44 +15,16 @@
         <link href="{{ asset('css/app.css') }}" rel="stylesheet" type="text/css">
     </head>
     <body>
-        <div class="container">
+        <div class="container" id="app">
             <div class="row">
                 <div class="col-md-12">
-                    <h1 class="page-header">Log file viewer</h1>
+                    <h1 class="page-header">Log File Viewer</h1>
                 </div>
             </div>
 
-            <div class="row">
-                <div>
-                    <div class="col-md-8 col-sm-8">
-                        <div class="form-group">
-                            <input type="text" placeholder="/var/tmp/file.log" class="form-control">
-                        </div>
-                    </div>
-                    <div class="col-md-4 col-sm-4">
-                        <div class="form-group">
-                            <div class="btn btn-info btn-block">View</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-12">
-                    <table class="table table-striped table-hover table-bordered">
-                        <thead>
-                            <th>No.</th>
-                            <th class="text-center">Log message</th>
-                        </thead>
-                        <tbody>
-                        @foreach ($logs as $log)
-                            <tr>
-                                <td class="text-center">{{ $loop->iteration }}</td>
-                                <td>{{ $log }}</td>
-                            </tr>
-                        @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            </div><!-- /.row -->
+            <log-viewer-table></log-viewer-table>
         </div><!-- /.container -->
+
+        <script src="{{ asset('js/app.js') }}"></script>
     </body>
 </html>

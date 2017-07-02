@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Services;
+use Exception;
 
 class ServerFileReaderService
 {
@@ -13,9 +14,18 @@ class ServerFileReaderService
      */
     public function read(string $fileLocation) : array
     {
-        $file = $fileLocation;
-        $data = file($file);
+        try {
+            $data = file($fileLocation);
+        } catch (Exception $e) {
+            return [
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ];
+        }
 
-        return $data;
+        return [
+            'status' => 'success',
+            'message' => $data
+        ];
     }
 }
