@@ -39,7 +39,7 @@
                     </thead>
                     <tbody>
                         <tr v-for="(log, index) in logs">
-                            <td class="text-center">{{ index + 1 }}</td>
+                            <td class="text-center">{{ getRowNumber(index) }}</td>
                             <td>{{ log }}</td>
                         </tr>
                     </tbody>
@@ -50,22 +50,22 @@
         <div class="pagination" v-if="this.logs.length > 0 && !error">
             <div class="col-xs-3">
                 <button class="btn btn-block btn-success"
-                    :class = "{ disabled : (this.page === 1)}"
+                    :class = "{ disabled : (this.currentPage === 1)}"
                     @click="updatePage(1)">|<</button>
             </div>
             <div class="col-xs-3">
                 <button class="btn btn-block btn-success"
-                    :class = "{ disabled : (this.page === 1)}"
-                    @click="updatePage(page - 1)"><</button>
+                    :class = "{ disabled : (this.currentPage === 1)}"
+                    @click="updatePage(currentPage - 1)"><</button>
             </div>
             <div class="col-xs-3">
                 <button class="btn btn-block btn-success"
-                    :class = "{ disabled : (this.page === this.lastPage)}"
-                    @click="updatePage(page + 1)">></button>
+                    :class = "{ disabled : (this.currentPage === this.lastPage)}"
+                    @click="updatePage(currentPage + 1)">></button>
             </div>
             <div class="col-xs-3">
                 <button class="btn btn-block btn-success"
-                    :class = "{ disabled : (this.page === this.lastPage)}"
+                    :class = "{ disabled : (this.currentPage === this.lastPage)}"
                     @click="updatePage(lastPage)">>|</button>
             </div>
         </div>
@@ -76,7 +76,7 @@
 <style lang="scss" scoped>
     .table {
         tr > th:first-child {
-            width: 40px;
+            width: 60px;
         }
     }
     .pagination {
@@ -91,23 +91,35 @@
 
 <script>
     export default {
-        data () {
+        data() {
             return {
                 logs: [],
                 filePath: '',
                 error: '',
-                page: 1,
+                currentPage: 1,
                 lastPage: 1
             }
         },
 
         methods: {
             /**
-             * Update page number
+             * Gets row number of current page
+             *
+             * @param {Number} index
+             * @return {Number} row number
              */
-            updatePage (page) {
+            getRowNumber(index) {
+                return ((this.currentPage - 1) * 10) + index + 1;
+            },
+
+            /**
+             * Update data by page
+             *
+             * @param {Number} page
+             */
+            updatePage(page) {
                 if (page >= 1 && page <= this.lastPage) {
-                    this.page = page;
+                    this.currentPage = page;
                     this.getLogData();
                 }
             },
@@ -115,10 +127,10 @@
             /**
              * Send request to read log data from server
              */
-            getLogData () {
+            getLogData() {
                 if (this.filePath === '') return;
 
-                axios.get(`/get-log-file-data?file_path=${this.filePath}&page=${this.page}`)
+                axios.get(`/get-log-file-data?file_path=${this.filePath}&page=${this.currentPage}`)
                     .then(({data}) => {
                         if (data.status === 'error') {
                             this.error = data.message;
