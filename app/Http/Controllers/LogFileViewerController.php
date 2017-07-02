@@ -46,7 +46,7 @@ class LogFileViewerController extends Controller
     }
 
     /**
-     * Paginate the given file array
+     * Paginate the given array
      *
      * @param  array  $fileContents
      * @param  int  $page
