@@ -31,6 +31,7 @@
 
         <div class="row">
             <div class="col-md-12">
+                <div class="page text-right">Page <span class="text-info">{{ currentPage }}</span></div>
                 <table
                     v-if="this.logs.length > 0 && !error"
                     class="table table-striped table-hover table-bordered"
@@ -64,7 +65,7 @@
             </div>
             <div class="col-xs-3">
                 <button class="btn btn-block btn-success"
-                    :class = "{ disabled : (this.currentPage === this.lastPage)}"
+                    :class = "{ disabled : this.isLastPage()}"
                     @click="updatePage(currentPage + 1)">></button>
             </div>
             <div class="col-xs-3">
@@ -91,6 +92,10 @@
         margin: 0 auto;
         bottom: 15px;
     }
+    .text-info {
+        width: 60px;
+        display: inline-block;
+    }
 </style>
 
 <script>
@@ -101,7 +106,9 @@
                 filePath: '',
                 error: '',
                 currentPage: 1,
-                lastPage: 1
+                lastPage: 1,
+                currentPointer: 0,
+                pointers: [{ page: 1000, pointer: 0 }]
             }
         },
 
@@ -125,13 +132,26 @@
             },
 
             /**
+             * Check is it last page
+             */
+            isLastPage() {
+                return !this.currentPointer;
+            },
+
+            /**
              * Update data by page
              *
              * @param {Number} page
              */
-            updatePage(page) {
-                if (page >= 1 && page <= this.lastPage) {
-                    this.currentPage = page;
+            updatePage(nextPage) {
+
+                if (nextPage > 1000) {
+                    this.currentPage = nextPage;
+                    let cursor = _.find(this.pointers, { page: Math.ceil(this.currentPage / 1000) * 1000 });
+                    this.getLogData(cursor.pointer);
+                }
+                else if (nextPage >= 1 && nextPage <= this.lastPage) {
+                    this.currentPage = nextPage;
                     this.getLogData();
                 }
             },
@@ -139,10 +159,10 @@
             /**
              * Send request to read log data from server
              */
-            getLogData() {
+            getLogData(pointer = 0) {
                 if (this.filePath === '') return;
 
-                axios.get(`/get-log-file-data?file_path=${this.filePath}&page=${this.currentPage}`)
+                axios.get(`/get-log-file-data?file_path=${this.filePath}&page=${this.currentPage}&pointer=${pointer}`)
                     .then(({data}) => {
                         if (data.status === 'error') {
                             this.error = data.message;
@@ -151,6 +171,11 @@
                         this.error = '';
                         this.logs = data.logs;
                         this.lastPage = data.totalPages;
+                        this.currentPointer = data.currentPointer;
+
+                        // Insert pointer to this stack if not exists
+                        if (!_.find(this.pointers, { page: data.totalPages }))
+                            this.pointers.push({ page : data.totalPages, pointer : data.currentPointer });
                     });
             },
         }

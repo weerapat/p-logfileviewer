@@ -41,7 +41,12 @@ class ServerFileReaderService
     public function paginate(array $contents, int $page, int $perPage = 10) : array
     {
         $totalPages = ceil(count($contents) / $perPage);
-        $startOffset = ($page - 1) * $perPage;
+
+        if ($totalPages >= 1000) {
+            $totalPages = (floor($page / 1000) + 1) * 1000;
+        }
+
+        $startOffset = (($page % 1000) - 1) * $perPage;
 
         return [
             'page' => $page,
