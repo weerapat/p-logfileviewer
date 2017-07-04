@@ -10,7 +10,7 @@
             <div class="col-md-4 col-sm-4">
                 <div class="form-group">
                     <button class="btn btn-info btn-block"
-                        :class = "{ disabled : (filePath.length == '')}"
+                        :class="{ disabled : (filePath.length == '')}"
                         @click="clickView()"
                     >
                         View
@@ -54,7 +54,7 @@
         <div class="pagination" v-if="this.logs.length > 0 && !error">
             <div class="col-xs-3">
                 <button class="btn btn-block btn-success"
-                    :class = "{ disabled : (this.currentPage === 1)}"
+                    :class="{ disabled : (this.currentPage === 1)}"
                     @click="updatePage(1)">|<</button>
             </div>
             <div class="col-xs-3">
