@@ -38,31 +38,10 @@ class LogFileViewerController extends Controller
         $response = $this->fileReaderService->read($filePath);
 
         if($response['status'] !== 'error') {
-            $response += $this->paginate($response['message'], $page);
+            $response += $this->fileReaderService->paginate($response['message'], $page);
             unset($response['message']);
         }
 
         return response()->json($response);
-    }
-
-    /**
-     * Paginate the given array
-     *
-     * @param  array  $fileContents
-     * @param  int  $page
-     * @param  int  $perPage
-     *
-     * @return array
-     */
-    public function paginate(array $fileContents, int $page, int $perPage = 10) : array
-    {
-        $totalPages = ceil(count($fileContents) / $perPage);
-        $startOffset = ($page - 1) * $perPage;
-
-        return [
-            'page' => $page,
-            'logs' => array_slice($fileContents, $startOffset, $perPage),
-            'totalPages' => $totalPages,
-        ];
     }
 }

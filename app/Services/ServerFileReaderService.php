@@ -45,4 +45,25 @@ class ServerFileReaderService
             'message' => $data
         ];
     }
+
+    /**
+     * Paginate the given array
+     *
+     * @param  array  $contents
+     * @param  int  $page
+     * @param  int  $perPage
+     *
+     * @return array
+     */
+    public function paginate(array $contents, int $page, int $perPage = 10) : array
+    {
+        $totalPages = ceil(count($contents) / $perPage);
+        $startOffset = ($page - 1) * $perPage;
+
+        return [
+            'page' => $page,
+            'logs' => array_slice($contents, $startOffset, $perPage),
+            'totalPages' => $totalPages,
+        ];
+    }
 }
