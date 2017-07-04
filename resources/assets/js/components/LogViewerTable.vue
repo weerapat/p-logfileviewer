@@ -3,7 +3,7 @@
         <div class="row">
             <div class="col-md-8 col-sm-8">
                 <div class="form-group">
-                    <input v-model="filePath" type="text" placeholder="/var/tmp/file.log" class="form-control">
+                    <input v-model="filePath" type="text" placeholder="/var/log/apache2/error.log" class="form-control">
                     <p class="help-block">Please add path file in your server then click view</p>
                 </div>
             </div>
