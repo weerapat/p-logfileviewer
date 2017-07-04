@@ -51,7 +51,7 @@ class ServerFileReaderServiceTest extends TestCase
     }
 
     /**
-     * @covers ::paginate
+     * @covers ServerFileReaderServiceTest::paginate
      */
     public function testPaginate()
     {
