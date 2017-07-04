@@ -9,6 +9,7 @@ use App\Services\ServerFileReaderService;
 
 class LogFileViewerController extends Controller
 {
+    /* @var ServerFileReaderService */
     protected $fileReaderService;
 
     public function __construct(ServerFileReaderService $fileReaderService)
@@ -17,6 +18,8 @@ class LogFileViewerController extends Controller
     }
 
     /**
+     * Get index view
+     *
      * @return View
      */
     public function index() : View
