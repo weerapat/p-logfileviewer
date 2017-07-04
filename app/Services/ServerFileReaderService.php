@@ -1,32 +1,71 @@
 <?php
 
 namespace App\Services;
-use Exception;
 
 class ServerFileReaderService
 {
-    /**
-     * Reads file from server
-     *
-     * @param  string $filePath
-     *
-     * @return array
-     */
-    public function read(string $filePath) : array
+    protected $file;
+    protected $buffer;
+    protected $finish;
+
+    public function __construct(string $filename, string $mode, int $pointer)
     {
-        try {
-            $data = file($filePath);
-        } catch (Exception $e) {
-            return [
-                'status' => 'error',
-                'message' => $e->getMessage()
-            ];
+        $this->file = fopen($filename, $mode);
+        fseek($this->file, $pointer);
+        $this->buffer = false;
+        $this->finish = false;
+    }
+
+    /**
+     * @return \Generator
+     */
+    public function chunks() : \Generator
+    {
+        while (true) {
+            $chunk = fread($this->file, 8192);
+            if (strlen($chunk)) yield $chunk;
+            elseif (feof($this->file)) {
+                $this->finish = true;
+                break;
+            }
+        }
+    }
+
+    /**
+     * @return \Generator
+     */
+    public function lines() : \Generator
+    {
+        foreach ($this->chunks() as $chunk) {
+            $lines = explode("\n", $this->buffer . $chunk);
+
+            $this->buffer = array_pop($lines);
+
+            foreach ($lines as $line) yield $line;
+        }
+        if ($this->buffer !== false) {
+            yield $this->buffer;
+        }
+    }
+
+    /**
+     * @return bool
+     */
+    public function isEndOfFile() : bool
+    {
+        return $this->finish;
+    }
+
+    /**
+     * @return int
+     */
+    public function currentPointer() : int
+    {
+        if ($this->finish) {
+            return 0;
         }
 
-        return [
-            'status' => 'success',
-            'message' => $data
-        ];
+        return ftell($this->file);
     }
 
     /**
