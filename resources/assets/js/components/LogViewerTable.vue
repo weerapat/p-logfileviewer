@@ -30,7 +30,7 @@
 
         <div class="row" v-if="this.logs.length > 0 && !error">
             <div class="col-md-12">
-                <div class="page text-right">Page <span class="text-info">{{ currentPage }}</span></div>
+                <div class="page text-right">Page <span class="text-info">{{ currentPage | numberFormat }}</span></div>
                 <table
                         class="table table-striped table-hover table-bordered"
                 >
@@ -106,6 +106,19 @@
                 lastPage: 1,
                 currentPointer: 0,
                 pointers: [{ page: 1000, pointer: 0 }]
+            }
+        },
+
+        filters: {
+            /**
+             * @param {Number} value
+             **/
+            numberFormat(value) {
+                if (!value) return '';
+
+                let parts = value.toString().split('.');
+                parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+                return parts.join(".");
             }
         },
 
