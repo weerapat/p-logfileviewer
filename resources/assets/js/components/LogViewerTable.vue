@@ -31,6 +31,7 @@
         <div class="row" v-if="this.logs.length > 0 && !error">
             <div class="col-md-12">
                 <div class="page text-right">Page <span class="text-info">{{ currentPage | numberFormat }}</span></div>
+                <p class="help-block">For protecting app crash, limit maximum 1,000 pages per time.</p>
                 <table
                         class="table table-striped table-hover table-bordered"
                 >
