@@ -5,11 +5,18 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Illuminate\Http\JsonResponse;
-use App\Services\ServerFileReaderService;
-use Exception;
+use App\Services\FileReaderService;
 
 class LogFileViewerController extends Controller
 {
+    /* @var FileReaderService */
+    protected $fileReaderService;
+
+    public function __construct(FileReaderService $fileReaderService)
+    {
+        $this->fileReaderService = $fileReaderService;
+    }
+
     /**
      * Get index view
      *
@@ -30,6 +37,8 @@ class LogFileViewerController extends Controller
     public function getLogFileData(Request $request) : JsonResponse
     {
         $filePath = $request->get('file_path');
+        $page     = $request->get('page', 1);
+        $pointer  = $request->get('pointer');
 
         if (!file_exists($filePath)) {
             return response()->json([
@@ -38,24 +47,11 @@ class LogFileViewerController extends Controller
             ]);
         }
 
-        $page = $request->get('page', 1);
-        $pointer = $request->get('pointer');
+        $data = $this->fileReaderService->read($filePath, 'r', $pointer);
 
-        $fileReaderService = new ServerFileReaderService($filePath, 'r', $pointer);
+        $response = $this->fileReaderService->paginate($data, $page);
+        $response += ['currentPointer' => $this->fileReaderService->currentPointer()];
 
-        $count = 0;
-        $data = [];
-        foreach ($fileReaderService->lines() as $line) {
-
-            $data[] = $line;
-            $count++;
-
-            if ($count === 10000 || $fileReaderService->isEndOfFile()) {
-                $response = $fileReaderService->paginate($data, $page);
-                $response += ['currentPointer' => $fileReaderService->currentPointer()];
-
-                return response()->json($response);
-            }
-        }
+        return response()->json($response);
     }
 }

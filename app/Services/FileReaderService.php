@@ -6,14 +6,32 @@ class FileReaderService
 {
     protected $file;
     protected $buffer;
-    protected $finish;
+    protected $isEndOfFile;
 
-    public function __construct(string $filename, string $mode, int $pointer)
+    /**
+     * @param string $filename
+     * @param string $mode
+     * @param int $pointer
+     *
+     * @return array
+     */
+    public function read(string $filename, string $mode, int $pointer): array
     {
         $this->file = fopen($filename, $mode);
         fseek($this->file, $pointer);
         $this->buffer = false;
-        $this->finish = false;
+        $this->isEndOfFile = false;
+
+        $count = 0;
+        $data = [];
+        foreach ($this->lines() as $line) {
+            $data[] = $line;
+            $count++;
+
+            if ($count === 10000 || $this->isEndOfFile()) {
+                return $data;
+            }
+        }
     }
 
     /**
@@ -25,7 +43,7 @@ class FileReaderService
             $chunk = fread($this->file, 8192);
             if (strlen($chunk)) yield $chunk;
             elseif (feof($this->file)) {
-                $this->finish = true;
+                $this->isEndOfFile = true;
                 break;
             }
         }
@@ -53,15 +71,17 @@ class FileReaderService
      */
     public function isEndOfFile() : bool
     {
-        return $this->finish;
+        return $this->isEndOfFile;
     }
 
     /**
+     * Checking current position of pointer
+     *
      * @return int
      */
     public function currentPointer() : int
     {
-        if ($this->finish) {
+        if ($this->isEndOfFile) {
             return 0;
         }
 

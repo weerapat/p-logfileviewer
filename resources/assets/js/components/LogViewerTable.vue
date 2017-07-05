@@ -28,12 +28,11 @@
             </div>
         </div>
 
-        <div class="row">
+        <div class="row" v-if="this.logs.length > 0 && !error">
             <div class="col-md-12">
                 <div class="page text-right">Page <span class="text-info">{{ currentPage }}</span></div>
                 <table
-                    v-if="this.logs.length > 0 && !error"
-                    class="table table-striped table-hover table-bordered"
+                        class="table table-striped table-hover table-bordered"
                 >
                     <thead>
                         <tr>
@@ -72,8 +71,7 @@
                     :class = "{ disabled : (this.currentPage === this.lastPage)}"
                     @click="updatePage(lastPage)">>|</button>
             </div>
-        </div>
-
+        </div><!-- /.pagination -->
     </div>
 </template>
 
