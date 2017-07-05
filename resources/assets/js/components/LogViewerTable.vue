@@ -43,7 +43,7 @@
                     </thead>
                     <tbody>
                         <tr v-for="(log, index) in logs">
-                            <td class="text-center">{{ getLineNumber(index) }}</td>
+                            <td class="text-center">{{ getLineNumber(index) | numberFormat }}</td>
                             <td>{{ log }}</td>
                         </tr>
                     </tbody>
@@ -64,7 +64,7 @@
             </div>
             <div class="col-xs-3">
                 <button class="btn btn-block btn-success"
-                    :class = "{ disabled : this.isLastPage()}"
+                    :class = "{ disabled : this.isLastPage() && this.currentPage === this.lastPage}"
                     @click="updatePage(currentPage + 1)">></button>
             </div>
             <div class="col-xs-3">
