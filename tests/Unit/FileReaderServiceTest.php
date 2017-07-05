@@ -2,7 +2,7 @@
 
 use Tests\TestCase;
 
-class ServerFileReaderServiceTest extends TestCase
+class FileReaderServiceTest extends TestCase
 {
     protected $service;
 

@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-class ServerFileReaderService
+class FileReaderService
 {
     protected $file;
     protected $buffer;

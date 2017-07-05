@@ -26,7 +26,6 @@
             <div class="col-md-12">
                 <div v-show="this.logs.length === 0" class="alert alert-info">No data</div>
             </div>
-
         </div>
 
         <div class="row">
